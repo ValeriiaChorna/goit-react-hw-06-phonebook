@@ -1,41 +1,67 @@
+import { createReducer } from '@reduxjs/toolkit';
 import { combineReducers } from 'redux';
-import {
-  ADD_CONTACTS,
-  REMOVE_CONTACTS,
-  CHANGE_FILTER,
-} from './contactsActionTypes';
+import contactsActions from './contactsActions';
+// import {
+//   ADD_CONTACTS,
+//   REMOVE_CONTACTS,
+//   CHANGE_FILTER,
+// } from './contactsActionTypes';
 
-function itemsReducer(state = [], { type, payload }) {
-  switch (type) {
-    case ADD_CONTACTS:
-      const { name } = payload.contact;
-      // const { contacts } = state;
-      const doesExistContact = state.some(contact => contact.name === name);
-      if (doesExistContact) {
-        alert(`${name} is allready exist in contacts.`);
-        return state;
-      }
-      return [...state, payload.contact];
-
-    case REMOVE_CONTACTS:
-      return state.filter(contact => contact.id !== payload.contactId);
-
-    default:
-      return state;
+const addContactFun = (state, action) => {
+  const { name } = action.payload.contact;
+  const doesExistContact = state.some(contact => contact.name === name);
+  if (doesExistContact) {
+    alert(`${name} is allready exist in contacts.`);
+    return state;
   }
-}
+  return [...state, action.payload.contact];
+};
 
-function fiterReducer(state = '', { type, payload }) {
-  switch (type) {
-    case CHANGE_FILTER:
-      return payload.filter;
+const removeContactFun = (state, action) =>
+  state.filter(contact => contact.id !== action.payload);
 
-    default:
-      return state;
-  }
-}
+const changeFilterFun = (state, action) => action.payload;
+
+const itemsReducer = createReducer([], {
+  [contactsActions.addContact]: addContactFun,
+  [contactsActions.removeContact]: removeContactFun,
+});
+
+const filterReducer = createReducer('', {
+  [contactsActions.changeFilter]: changeFilterFun,
+});
+
+// function itemsReducer(state = [], { type, payload }) {
+//   switch (type) {
+//     case contactsActions.addContact.type:
+//       const { name } = payload.contact;
+//       // const { contacts } = state;
+//       const doesExistContact = state.some(contact => contact.name === name);
+//       if (doesExistContact) {
+//         alert(`${name} is allready exist in contacts.`);
+//         return state;
+//       }
+//       return [...state, payload.contact];
+
+//     case contactsActions.removeContact.type:
+//       return state.filter(contact => contact.id !== payload);
+
+//     default:
+//       return state;
+//   }
+// }
+
+// function filterReducer(state = '', { type, payload }) {
+//   switch (type) {
+//     case contactsActions.changeFilter.type:
+//       return payload;
+
+//     default:
+//       return state;
+//   }
+// }
 
 export default combineReducers({
   items: itemsReducer,
-  filter: fiterReducer,
+  filter: filterReducer,
 });

@@ -1,20 +1,13 @@
 import React from 'react';
 import T from 'prop-types';
 import { connect } from 'react-redux';
-import contactActions from '../redux/contacts/contactsActions';
 import ContactItem from './ContactItem';
 
-function ContactList({ contacts, onRemoveContact }) {
+function ContactList({ contacts }) {
   return (
     <ul>
-      {contacts.map(({ name, id, number }) => (
-        <ContactItem
-          key={id}
-          name={name}
-          id={id}
-          number={number}
-          onRemoveContact={() => onRemoveContact(id)}
-        />
+      {contacts.map(({ id }) => (
+        <ContactItem key={id} id={id} />
       ))}
     </ul>
   );
@@ -28,7 +21,6 @@ ContactList.propTypes = {
       number: T.string,
     }),
   ).isRequired,
-  onRemoveContact: T.func.isRequired,
 };
 
 const MapStateToProps = state => {
@@ -40,6 +32,4 @@ const MapStateToProps = state => {
   return { contacts: getVisibleContacts };
 };
 
-const MapDispatchToProps = { onRemoveContact: contactActions.removeContact };
-
-export default connect(MapStateToProps, MapDispatchToProps)(ContactList);
+export default connect(MapStateToProps)(ContactList);
