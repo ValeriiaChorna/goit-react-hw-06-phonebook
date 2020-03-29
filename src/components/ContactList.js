@@ -1,18 +1,19 @@
 import React from 'react';
 import T from 'prop-types';
+import { connect } from 'react-redux';
+import contactActions from '../redux/contacts/contactsActions';
 import ContactItem from './ContactItem';
-import withTheme from '../hoc/withTheme';
 
-function ContactList({ contacts, onRemoveContact, theme }) {
+function ContactList({ contacts, onRemoveContact }) {
   return (
-    <ul className={theme === 'dark' ? 'dark' : 'light'}>
+    <ul>
       {contacts.map(({ name, id, number }) => (
         <ContactItem
           key={id}
           name={name}
           id={id}
           number={number}
-          onRemoveContact={onRemoveContact}
+          onRemoveContact={() => onRemoveContact(id)}
         />
       ))}
     </ul>
@@ -30,4 +31,15 @@ ContactList.propTypes = {
   onRemoveContact: T.func.isRequired,
 };
 
-export default withTheme(ContactList);
+const MapStateToProps = state => {
+  const { items, filter } = state.contacts;
+  const normalizedFilter = filter.toLowerCase();
+  const getVisibleContacts = items.filter(contact =>
+    contact.name.toLowerCase().includes(normalizedFilter),
+  );
+  return { contacts: getVisibleContacts };
+};
+
+const MapDispatchToProps = { onRemoveContact: contactActions.removeContact };
+
+export default connect(MapStateToProps, MapDispatchToProps)(ContactList);

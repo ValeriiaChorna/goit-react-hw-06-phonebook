@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import Layout from './Layout';
-import uuid from 'uuid';
 import ContactEditer from './ContactEditer';
 import ContactList from './ContactList';
 import Filter from './Filter';
@@ -9,8 +8,8 @@ import ThemeContext from '../context/ThemeContext';
 
 class App extends Component {
   state = {
-    contacts: [],
-    filter: '',
+    // contacts: [],
+    // filter: '',
     theme: 'light',
   };
 
@@ -36,49 +35,8 @@ class App extends Component {
     });
   };
 
-  addContact = newContact => {
-    const { name, number } = newContact;
-    const { contacts } = this.state;
-    const doesExistContact = contacts.some(contact => contact.name === name);
-    const contact = {
-      id: uuid.v4(),
-      name,
-      number,
-    };
-    if (doesExistContact) {
-      alert(`${name} is allready exist in contacts.`);
-      return;
-    }
-    this.setState(prevState => {
-      return {
-        contacts: [...prevState.contacts, contact],
-      };
-    });
-  };
-
-  removeContact = contactId => {
-    this.setState(prevState => {
-      return {
-        contacts: prevState.contacts.filter(({ id }) => id !== contactId),
-      };
-    });
-  };
-
-  changeFilter = filter => {
-    this.setState({ filter });
-  };
-
-  getVisibleContacts = () => {
-    const { contacts, filter } = this.state;
-
-    return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(filter.toLowerCase()),
-    );
-  };
-
   render() {
-    const { contacts, filter, theme } = this.state;
-    const visibleContact = this.getVisibleContacts();
+    const { theme } = this.state;
     return (
       <ThemeContext.Provider value={this.state.theme}>
         <Layout>
@@ -92,23 +50,22 @@ class App extends Component {
           <h1>Phonebook</h1>
 
           <h2>Create new contact</h2>
-          <ContactEditer onAddContact={this.addContact} />
+          <ContactEditer />
 
-          {contacts.length > 0 && <h2>Contacts</h2>}
+          {/* {contacts.length > 0 && <h2>Contacts</h2>} */}
 
-          {contacts.length > 1 && (
+          {/* {contacts.length > 1 && (
             <div>
-              <h3>Find contact by name</h3>
+            <h3>Find contact by name</h3>
               <Filter value={filter} onChangeFilter={this.changeFilter} />
             </div>
-          )}
+          )} */}
 
-          {visibleContact.length > 0 && (
-            <ContactList
-              contacts={visibleContact}
-              onRemoveContact={this.removeContact}
-            />
-          )}
+          <h3>Find contact by name</h3>
+          <Filter />
+
+          {/* {visibleContact.length > 0 && <ContactList />} */}
+          <ContactList />
         </Layout>
       </ThemeContext.Provider>
     );

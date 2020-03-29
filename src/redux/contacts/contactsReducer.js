@@ -1,13 +1,24 @@
 import { combineReducers } from 'redux';
-import { ADD_CONTACTS, REMOVE_CONTACTS, FILTER } from './contactsActionTypes';
+import {
+  ADD_CONTACTS,
+  REMOVE_CONTACTS,
+  CHANGE_FILTER,
+} from './contactsActionTypes';
 
-function contactsReducer(state = [], { type, payload }) {
+function itemsReducer(state = [], { type, payload }) {
   switch (type) {
     case ADD_CONTACTS:
+      const { name } = payload.contact;
+      // const { contacts } = state;
+      const doesExistContact = state.some(contact => contact.name === name);
+      if (doesExistContact) {
+        alert(`${name} is allready exist in contacts.`);
+        return state;
+      }
       return [...state, payload.contact];
 
     case REMOVE_CONTACTS:
-      return state.filter(note => note.id !== payload.id);
+      return state.filter(contact => contact.id !== payload.contactId);
 
     default:
       return state;
@@ -16,7 +27,7 @@ function contactsReducer(state = [], { type, payload }) {
 
 function fiterReducer(state = '', { type, payload }) {
   switch (type) {
-    case FILTER:
+    case CHANGE_FILTER:
       return payload.filter;
 
     default:
@@ -25,6 +36,6 @@ function fiterReducer(state = '', { type, payload }) {
 }
 
 export default combineReducers({
-  contacts: contactsReducer,
+  items: itemsReducer,
   filter: fiterReducer,
 });

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import contactActions from '../redux/contacts/contactsActions';
 import T from 'prop-types';
-import withTheme from '../hoc/withTheme';
 
 class ContactEditer extends Component {
   static propTypes = {
@@ -18,18 +19,17 @@ class ContactEditer extends Component {
   };
 
   handleSubmit = e => {
+    const { name, number } = this.state;
     e.preventDefault();
-    this.props.onAddContact(this.state);
+    this.props.onAddContact(name, number);
     this.setState({ name: '', number: '' });
   };
 
   render() {
     const { name, number } = this.state;
-    const { theme } = this.props;
-    const classNameTheme = theme === 'dark' ? 'dark' : 'light';
 
     return (
-      <div className={`contactEdit-${classNameTheme}`}>
+      <div className="contactEdit">
         <form onSubmit={this.handleSubmit}>
           <label>
             <p>Name</p>
@@ -61,4 +61,6 @@ class ContactEditer extends Component {
   }
 }
 
-export default withTheme(ContactEditer);
+const MapDispatchToProps = { onAddContact: contactActions.addContact };
+
+export default connect(null, MapDispatchToProps)(ContactEditer);
